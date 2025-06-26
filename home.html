@@ -618,7 +618,7 @@
     </audio>
 
     <!-- Botón para pausar o reproducir -->
-    <button class="audio-toggle" onclick="toggleAudio()">⏸ Detener Música</button>
+    <button class="audio-toggle" onclick="toggleAudio()">⏸</button>
     <!-- Navigation -->
     <nav class="nav-menu">
         <ul>
@@ -921,10 +921,10 @@
         function toggleAudio() {
         if (audio.paused) {
             audio.play();
-            btn.innerHTML = '⏸ Detener Música';
+            btn.innerHTML = '⏸';
         } else {
             audio.pause();
-            btn.innerHTML = '▶️ Reanudar Música';
+            btn.innerHTML = '▶️';
         }
         }
     </script>
