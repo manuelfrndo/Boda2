@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Deseos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes:wght@400&family=Playfair+Display:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: linear-gradient(135deg, #e2f2ff 0%, #a3d6ff 50%, #e2f2ff 100%);
+      color: #3a4c5a;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header con gradiente y elegancia */
+    .hero {
+      background: linear-gradient(135deg, #e2f2ff 0%, #a3d6ff 50%, #e2f2ff 100%), 
+                  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" text-anchor="middle" fill="rgba(255,255,255,0.1)" font-size="12">♥</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
+      padding: 4rem 2rem;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-weight: 400;
+      max-width: 800px;
+      margin: 0 auto;
+      opacity: 0.95;
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    /* Container principal */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Grid del catálogo mejorado */
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 4rem;
+    }
+
+    /* Tarjetas de productos elegantes */
+    .producto {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(139, 94, 60, 0.15);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(139, 94, 60, 0.1);
+    }
+
+    .producto::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #8b5e3c, #d4a574, #8b5e3c);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .producto:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(139, 94, 60, 0.25);
+    }
+
+    .producto:hover::before {
+      opacity: 1;
+    }
+
+    .producto img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+    }
+
+    .producto:hover img {
+      transform: scale(1.05);
+    }
+
+    .producto-contenido {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .producto h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #3c558b;
+      margin-bottom: 0.8rem;
+      line-height: 1.3;
+    }
+
+    .producto-id {
+      display: inline-block;
+      background: rgba(139, 94, 60, 0.1);
+      color: #3c5c8b;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+    }
+
+    .producto-monto {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #749ad4;
+      margin-bottom: 1rem;
+    }
+
+    .producto p {
+      color: #545d6b;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      flex-grow: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .producto button {
+      background: linear-gradient(135deg, #3c5c8b, #4e78a0);
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .producto button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .producto button:hover::before {
+      left: 100%;
+    }
+
+    .producto button:hover {
+      background: linear-gradient(135deg, #21365c, #2e557a);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(60, 97, 139, 0.4);
+    }
+
+    .producto button:active {
+      transform: translateY(0);
+    }
+
+    /* Sección de lista de deseos mejorada */
+    .lista-deseos {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin: 4rem auto;
+      max-width: 900px;
+      box-shadow: 0 12px 40px rgba(60, 75, 139, 0.15);
+      border: 2px dashed rgba(60, 81, 139, 0.3);
+      position: relative;
+    }
+
+    .lista-deseos::before {
+      content: '♥';
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      color: #d4a574;
+      font-size: 2rem;
+      padding: 0 1rem;
+    }
+
+    .lista-deseos h2 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.5rem;
+      color: #3c618b;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .lista-deseos ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .lista-deseos li {
+      background: rgba(60, 88, 139, 0.05);
+      border: 1px solid rgba(60, 81, 139, 0.1);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      color: #545c6b;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lista-deseos li::before {
+      content: '✓';
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #3c588b;
+      font-weight: bold;
+      transition: left 0.3s ease;
+    }
+
+    .lista-deseos li:hover::before {
+      left: 10px;
+    }
+
+    .lista-deseos li:hover {
+      background: rgba(60, 94, 139, 0.1);
+      padding-left: 3rem;
+    }
+
+    /* Sección de transferencia elegante */
+    .transferencia {
+      background: linear-gradient(135deg, #e6f0ff, #f0f4fe);
+      border: 2px solid #7496d4;
+      border-radius: 20px;
+      padding: 3rem;
+      margin: 4rem auto;
+      max-width: 800px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(116, 134, 212, 0.2);
+      position: relative;
+    }
+
+    .transferencia::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #7496d4, #3c5e8b, #7492d4);
+      border-radius: 20px;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .transferencia h3 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.2rem;
+      color: #3c588b;
+      margin-bottom: 1.5rem;
+    }
+
+    .transferencia p {
+      font-size: 1.1rem;
+      line-height: 2;
+      color: #545d6b;
+    }
+
+    .transferencia strong {
+      color: #3c588b;
+      font-weight: 600;
+    }
+
+    .transferencia a {
+      color: #748ed4;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .transferencia a:hover {
+      color: #3c518b;
+      text-decoration: underline;
+    }
+
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Responsive mejorado */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 3rem 1rem;
+      }
+      
+      .container {
+        padding: 2rem 1rem;
+      }
+      
+      .catalogo {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .lista-deseos,
+      .transferencia {
+        padding: 2rem;
+        margin: 3rem auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .producto {
+        border-radius: 15px;
+      }
+      
+      .producto-contenido {
+        padding: 1.2rem;
+      }
+      
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      
+      .hero h2 {
+        font-size: 1rem;
+      }
+    }
+
+    /* Estados vacíos */
+    .lista-vacia {
+      text-align: center;
+      color: #4e6ba0;
+      font-style: italic;
+      padding: 2rem;
+      background: rgba(60, 85, 139, 0.05);
+      border-radius: 12px;
+    }
+
+    /* Efectos de hover mejorados */
+    .producto:hover .producto h3 {
+      color: #4e61a0;
+      transition: color 0.3s ease;
+    }
+
+    .producto:hover .producto-monto {
+      animation: pulse 1s ease-in-out;
+    }
+
+    .btn-retroceso {
+      font-family: 'Cormorant Garamond', serif;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: #ffffffcc;
+      border: 1px solid #cccccc;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      z-index: 1000;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-retroceso:hover {
+      font-family: 'Cormorant Garamond', serif;
+      background-color: #e0e0e0;
+    }
+
+  </style>
+  
+</head>
+<body>
+  <button class="btn-retroceso" onclick="volverHome()">⬅ Volver</button>
+
+  <header class="hero">
+    <h1>Lista de Deseos de Boda</h1>
+    <h2>Con tu cariño y generosidad, estos son algunos deseos que puedes ayudarnos a cumplir</h2>
+  </header>
+
+  <div class="container">
+    <div class="catalogo" id="catalogo">
+      <!-- Catálogo dinámico -->
+    </div>
+
+    <section class="lista-deseos" id="deseos-section">
+      <h2>Mi Lista de Deseos</h2>
+      <ul id="deseos">
+        <li class="lista-vacia">Aún no has agregado deseos a tu lista ✨</li>
+      </ul>
+    </section>
+
+    <section class="transferencia" id="transferencia">
+      <h3>Datos para Transferencia</h3>
+      <p>
+        <strong>MANUEL FERNANDO BARRAZA BORQUEZ</strong><br>
+        19.933.447-6<br>
+        Bci / Banco Crédito e Inversiones<br>
+        Cuenta Corriente: <strong>777919933447</strong><br>
+        Correo: <a href="mailto:manuelfrndo@gmail.com">manuelfrndo@gmail.com</a>
+      </p>
+    </section>
+  </div>
+
+  <script>
+    const deseos = [
+      { id: 'D001', nombre: 'Primer Hogar Dulce Hogar', descripcion: 'Para ayudarnos a construir y equipar con amor nuestro nidito.', monto: '$40.000' },
+      { id: 'D002', nombre: 'Nuestra Luna de Miel', descripcion: 'Para disfrutar de los primeros días como esposos, celebrando el amor y el descanso.', monto: '$50.000' },
+      { id: 'D003', nombre: 'Tiempo de Dos', descripcion: 'Para invertir en experiencias juntos: cursos, libros, talleres, etc.', monto: '$35.000' },
+      { id: 'D004', nombre: 'Citas y Café', descripcion: 'Para seguir cultivando el romance en los pequeños momentos.', monto: '$30.000' },
+      { id: 'D005', nombre: 'Sorpresas y Celebraciones', descripcion: 'Porque siempre habrá motivos para festejar lo que Dios ha hecho.', monto: 'Monto libre 💌' },
+      { id: 'D006', nombre: 'Primer Hogar', descripcion: 'Aporte para el mobiliario o detalles que harán de nuestra casa un hogar.', monto: '$70.000' },
+      { id: 'D007', nombre: 'Luna de Miel Soñada', descripcion: 'Para nuestra primera gran aventura como esposos.', monto: '$100.000' },
+      { id: 'D008', nombre: 'Cena para Dos', descripcion: 'Para seguir celebrando el amor en cada etapa.', monto: '$45.000' },
+      { id: 'D009', nombre: 'Sueños y Propósito', descripcion: 'Para invertir en herramientas, estudios o proyectos que Dios ha puesto en nuestro corazón.', monto: '$80.000' },
+      { id: 'D010', nombre: 'Rincón de Paz', descripcion: 'Para crear un espacio acogedor donde descansar, orar y conversar.', monto: '$60.000' },
+      { id: 'D011', nombre: 'Próxima Aventura', descripcion: 'Aporte para viajes, escapadas o retiros que fortalezcan nuestro vínculo.', monto: '$55.000' },
+      { id: 'D012', nombre: 'Detalles con Amor', descripcion: 'Para lo inesperado, lo cotidiano y seguir cuidándonos con gestos pequeños.', monto: '$30.000' }
+    ];
+
+    const catalogo = document.getElementById('catalogo');
+    const listaDeseos = document.getElementById('deseos');
+    let listaVacia = true;
+
+    deseos.forEach(deseo => {
+      const card = document.createElement('div');
+      card.className = 'producto';
+      card.innerHTML = `
+        <img src="https://i.imgur.com/P2EVbox.png" alt="${deseo.nombre}" />
+        <div class="producto-contenido">
+          <h3>${deseo.nombre}</h3>
+          <div class="producto-id">ID: ${deseo.id}</div>
+          <div class="producto-monto">${deseo.monto}</div>
+          <p>${deseo.descripcion}</p>
+          <button onclick="agregarDeseo('${deseo.id}', '${deseo.nombre}', '${deseo.monto}')">
+            ✨ Agregar a la lista
+          </button>
+        </div>
+      `;
+      catalogo.appendChild(card);
+    });
+
+    function agregarDeseo(id, nombre, monto) {
+      // Limpiar mensaje de lista vacía
+      if (listaVacia) {
+        listaDeseos.innerHTML = '';
+        listaVacia = false;
+      }
+
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${nombre}</strong> (${id}) - ${monto}`;
+      li.style.animation = 'fadeInUp 0.5s ease-out';
+      listaDeseos.appendChild(li);
+
+      // Mostrar alerta mejorada
+      setTimeout(() => {
+        alert("Tu deseo ha sido recepcionado por los novios. A continuación, te dejamos los datos de transferencia 🤍 (Este medio de pago no incluye intereses ni comisiones)");
+        
+        // Desplazamiento suave hacia la sección de transferencia
+        document.getElementById('transferencia').scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 300);
+    }
+    function volverHome() {
+      window.location.href = "home.html";
+    }
+  </script>
+</body>
+</html>
